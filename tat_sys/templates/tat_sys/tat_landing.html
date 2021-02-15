@@ -1,0 +1,150 @@
+{% extends 'tat_sys/base.html' %}
+
+{% block title %}
+Welcome to ARSP-DMU | TAT Monitoring
+{% endblock title %}
+
+
+{% block breadcrumb %}
+    <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-12 d-flex no-block align-items-center">
+                        <h4 class="page-title">Dashboard</h4>
+                        <!-- <div class="ml-auto text-right">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Library</li>
+                                </ol>
+                            </nav> 
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+{% endblock breadcrumb %}
+
+
+
+{% block content %}
+<div class="row">
+    <!-- Column -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-refresh"></i></h1>
+                <h5 class="m-b-0 m-t-5 text-white">{{ on_going_tat }}</h5>
+                <h6 class="text-white">On Going TAT</h6>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card card-hover">
+            <div class="box bg-success text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-timetable"></i></h1>
+                <h5 class="m-b-0 m-t-5 text-white">{{ ontime_tat }}</h5>
+                <h6 class="text-white ">TAT Completed on time</h6>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card card-hover">
+            <div class="box bg-warning text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-exclamation"></i></h1>
+                <h5 class="m-b-0 m-t-5 text-white">{{ warning_tat }}</h5>
+                <h6 class="text-white">TAT Close to Overdue</h6>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-3">
+        <div class="card card-hover">
+            <div class="box bg-danger text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-radioactive"></i></h1>
+                <h5 class="m-b-0 m-t-5 text-white">{{ overdue_tat }}</h5>
+                <h6 class="text-white">TAT Overdue</h6>
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row col-md-10 mx-auto m-t-20">
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-refresh"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ processing }}</h3>
+                <h4 class="text-white">Processing</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-feather"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ encoding }}</h3>
+                <h4 class="text-white ">Encoding</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-tooltip-edit"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ editing }}</h3>
+                <h4 class="text-white">Editing</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+</div>
+
+<div class="row col-md-10 mx-auto">
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-check"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ lab_verify }}</h3>
+                <h4 class="text-white">Lab Verification</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-check-all"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ final_verify }}</h3>
+                <h4 class="text-white ">Final Verification</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+    <div class="col-md-6 col-lg-4">
+        <div class="card card-hover">
+            <div class="box bg-cyan text-center">
+                <h1 class="font-light text-white"><i class="mdi mdi-verified"></i></h1>
+                <h3 class="m-b-0 m-t-5 text-white">{{ releasing }}</h3>
+                <h4 class="text-white">Releasing</h4>
+            </div>
+        </div>
+    </div>
+    <!-- Column -->
+</div>
+
+
+
+<!-- BEGIN MODAL -->
+
+<!-- Modal Add Category -->
+
+<!-- END MODAL -->
+
+
+{% endblock content %}
+
