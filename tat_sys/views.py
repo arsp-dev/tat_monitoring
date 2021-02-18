@@ -41,6 +41,22 @@ def calendar_view(request):
     return render(request, 'tat_sys/calendar.html',{'holidays': holidays})
 
 
+@login_required(login_url='/tat_sys/login')
+def delete_batch(request):
+    batch_id = request.POST['batch_id']
+    Batches.objects.filter(process__batch_id=batch_id).delete()
+
+    return HttpResponseRedirect('/tat_sys/monitoring')
+
+
+@login_required(login_url='/tat_sys/login')
+def delete_package(request):
+    package_id = request.POST['package_id']
+    Packages.objects.filter(id=package_id).delete()
+
+    return HttpResponseRedirect('/tat_sys/receiving')
+
+
 # GET : view for landing page
 @login_required(login_url='/tat_sys/login')
 def tat_landing(request):
@@ -137,9 +153,9 @@ def save_batches(request):
                                 date_received=datereceived,
                                 received_by=received_by)
             batch.process_set.create(process="1_receiving",start_date=batch.date_received)
-            return HttpResponseRedirect('/tat_sys')
+            return HttpResponseRedirect('/tat_sys/monitoring')
         except:
-            return HttpResponseRedirect('/tat_sys')
+            return HttpResponseRedirect('/tat_sys/monitoring')
 # <! -- end batches --!>
 
 @login_required(login_url='/tat_sys/login')
@@ -222,9 +238,9 @@ def save_holiday(request):
             else:
                 Holiday.objects.filter(holiday=holiday_date).delete()
                 
-            return HttpResponseRedirect('/tat_sys')
+            return HttpResponseRedirect('/tat_sys/calendar')
         except:
-            return HttpResponseRedirect('/tat_sys')
+            return HttpResponseRedirect('/tat_sys/calendar')
         
 # <! -- end holiday --!>
 
