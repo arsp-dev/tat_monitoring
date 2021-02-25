@@ -55,7 +55,12 @@ Welcome to ARSP-DMU | Monitoring
                         <tbody>
                             {% for batch in batches  %}
                            
-                                <tr>
+                                <tr class="
+                                    {% if batch.get_running_tat >= 50  %}
+                                    table-danger
+                                    {% elif batch.get_running_tat < 50 and batch.get_running_tat >= 40 %}
+                                    table-warning
+                                    {% endif %}">
                                     <td style="text-align:center">{{ batch.get_format_date }}</td>
                                     <td style="text-align:center">{{ batch.site }}</td>
                                     <td style="text-align:center">{{ batch.batch_name }}</td>

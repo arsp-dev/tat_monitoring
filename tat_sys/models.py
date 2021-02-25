@@ -3,8 +3,20 @@ import pandas as pd
 import numpy as np
 import datetime
 from django.forms import model_to_dict
+import uuid
+import os
 
 
+
+dirpath = os.getcwd()
+
+lab_staff = pd.read_excel(dirpath + '/tat_sys/static/excel_files/ARSP_STAFF.xlsx','Lab')
+dmu_staff = pd.read_excel(dirpath + '/tat_sys/static/excel_files/ARSP_STAFF.xlsx','Dmu')
+sec_staff = pd.read_excel(dirpath + '/tat_sys/static/excel_files/ARSP_STAFF.xlsx','Secretariat')
+
+lab_staff = lab_staff['Staff Name'].values.tolist()
+dmu_staff = dmu_staff['Staff Name'].values.tolist()
+sec_staff = sec_staff['Staff Name'].values.tolist()
 # Create your models here.
 
 class Packages(models.Model):
@@ -26,6 +38,7 @@ class Packages(models.Model):
 
 class Batches(models.Model):
     batch_name = models.TextField(null=True,blank=True,default=None,unique=True)
+    uuid = models.UUIDField(default=uuid.uuid4, editable=False)
     site = models.TextField(max_length=3)
     accession_number = models.TextField(max_length=99)
     isolate_number = models.IntegerField()
@@ -40,32 +53,68 @@ class Batches(models.Model):
     def get_current_status(self):
         p = Process.objects.filter(batch_id=self.id).last()
         ret = p.process
+        suff = ''
+        if p.finish_sign != None:
+            if p.finish_sign in lab_staff:
+                suff = 'Lab'
+            elif p.finish_sign in sec_staff or p.finish_sign in dmu_staff:
+                suff = 'Office'
+            
+            
+        else:
+            if p.start_sign in lab_staff:
+                suff = 'Lab'
+            elif p.start_sign in sec_staff or p.start_sign in dmu_staff:
+                suff = 'Office'
+           
+        
         
         if '1_' in ret:
-            ret = 'Processing'
+            if suff != '':
+                ret = 'Processing' + ' (' + suff + ')'
+            else:
+                ret = 'Processing'
         elif '2_' in ret:
-            ret = 'Encoding'
+            if suff != '':
+                ret = 'Encoding' + ' (' + suff + ')'
+            else:
+                ret = 'Encoding'
         elif '3_' in ret:
-            ret = 'Editing'
+            if suff != '':
+                ret = 'Editing' + ' (' + suff + ')'
+            else:
+                ret = 'Editing'
         elif '4_' in ret:
-            ret = 'Lab Verification'
+            if suff != '':
+                ret = 'Lab Verification' + ' (' + suff + ')'
+            else:
+                ret = 'Lab Verification'
         elif '5_' in ret:
-            ret = 'Final Verification'
+            if suff != '':
+                ret = 'Final Verification' + ' (' + suff + ')'
+            else:
+                ret = 'Final Verification'
         elif '6_' in ret:
-            ret = 'Releasing'
+            if suff != '':
+                ret = 'Releasing' + ' (' + suff + ')'
+            else:
+                ret = 'Releasing'
             
         return ret
     get_current_status = property(get_current_status)
+    def get_running_tat(self):
+        holidays = Holiday.objects.all().values_list('holiday',flat=True)
+        diff = np.busday_count( self.date_received,datetime.date.today(),holidays=holidays,weekmask=[1,1,1,1,1,1,0] )
+        return diff
+    
+    get_running_tat = property(get_running_tat)
     
   
 
     def __str__(self):
         return self.batch_name
     
-    def get_running_tat(self):
-        holidays = Holiday.objects.all().values_list('holiday',flat=True)
-        diff = np.busday_count( self.date_received,datetime.date.today(),holidays=holidays,weekmask=[1,1,1,1,1,1,0] )
-        return diff
+    
     
     
     def get_absolute_url(self):
