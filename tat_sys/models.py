@@ -121,6 +121,23 @@ class Batches(models.Model):
         return "batches/%i/" % self.id
     
     
+    def get_qr_code_url(self):
+        return "http://10.10.25.178:8081/tat_sys/qr-code/" + str(self.uuid) + '/'
+    get_qr_code_url = property(get_qr_code_url)
+    
+    
+    def get_current_holder(self):
+        p = Process.objects.filter(batch_id=self.id).last()
+        suff = ''
+        if p.finish_sign != None:
+           suff = p.finish_sign  
+        else:
+            suff = p.start_sign
+        
+        return suff
+    get_current_holder = property(get_current_holder)
+    
+    
     def get_format_date(self):
         date_received = datetime.datetime.strftime(self.date_received, '%m/%d/%Y')
         return date_received

@@ -1,0 +1,51 @@
+{% extends 'tat_sys/base.html' %}
+{% load qr_code %}
+{% block title %}
+Welcome to ARSP-DMU | QR Code
+{% endblock title %}
+
+
+{% block breadcrumb %}
+    <div class="page-breadcrumb">
+                <div class="row">
+                    <div class="col-12 d-flex no-block align-items-center">
+                        <h4 class="page-title">QR Code</h4>
+                        <!-- <div class="ml-auto text-right">
+                            <nav aria-label="breadcrumb">
+                                <ol class="breadcrumb">
+                                    <li class="breadcrumb-item active">Dashboard</li>
+                                    <li class="breadcrumb-item active" aria-current="page">Library</li>
+                                </ol>
+                            </nav> 
+                        </div> -->
+                    </div>
+                </div>
+            </div>
+{% endblock breadcrumb %}
+
+
+
+{% block content %}
+<div class="row">
+    <div class="col-md-8 mx-auto">
+        <!-- card -->
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title m-b-0 m-t-3"></h4>
+                <div class="col-md-10 mx-auto">
+                    {% qr_from_text  batch.get_qr_code_url %}
+                </div>
+               <b>{{ batch.batch_name }}</b><br>
+                Current Holder : {% if current_holder == user.get_full_name %} <b>You</b>  {% else %}  <b>{{ current_holder }}</b> {% endif %}
+            </div>
+        </div>
+      
+   
+</div>
+
+<script>
+
+</script>
+
+{% endblock content %}
+

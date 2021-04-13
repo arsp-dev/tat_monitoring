@@ -20,4 +20,5 @@ urlpatterns = [
    path('save_package', views.save_package, name="save_package"),
    path('delete_batch', views.delete_batch, name="delete_batch"),
    path('delete_package', views.delete_package, name="delete_package"),
+   path('qr-code/<str:batch_uuid>/', views.qr_code, name="qr_code"),
 ] 

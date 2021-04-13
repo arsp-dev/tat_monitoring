@@ -3,3 +3,4 @@ psycopg2>=2.7,<3.0
 pandas==0.25.3
 xlrd==1.2.0
 xlsxwriter==1.1.8
+django-qr-code==2.1.0

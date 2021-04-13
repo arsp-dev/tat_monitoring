@@ -39,7 +39,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'tat_sys',
-    'mathfilters'
+    'mathfilters',
+    'qr_code'
 ]
 
 MIDDLEWARE = [

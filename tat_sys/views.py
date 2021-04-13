@@ -21,6 +21,10 @@ lab_staff = lab_staff['Staff Name'].values.tolist()
 dmu_staff = dmu_staff['Staff Name'].values.tolist()
 sec_staff = sec_staff['Staff Name'].values.tolist()
 
+# @login_required(login_url='/tat_sys/login')
+# def qr_code(request):
+#     return render(request, 'tat_sys/qr-code.html')
+
 
 @login_required(login_url='/tat_sys/login')
 def receiving_view(request):
@@ -60,7 +64,7 @@ def delete_package(request):
 # GET : view for landing page
 @login_required(login_url='/tat_sys/login')
 def tat_landing(request):
-    on_going_tat = Batches.objects.filter(date_received__gt=datetime.datetime.now() - timedelta(days=40)).filter(status=None).count()
+    on_going_tat = Batches.objects.filter(status=None).count()
 # on_going_tat = Batches.dashboard.count()
     warning_tat = Batches.objects.filter(date_received__lt=datetime.datetime.now() - timedelta(days=40)).filter(date_received__gt=datetime.datetime.now() - timedelta(days=50)).count()
     overdue_tat = Batches.objects.filter(status='Overdue').count()
@@ -77,17 +81,17 @@ def tat_landing(request):
     
     
     for batch in batches:
-        if batch.get_current_status == 'Processing':
+        if 'Processing' in batch.get_current_status:
             processing += 1
-        elif batch.get_current_status == 'Encoding':
+        elif 'Encoding' in batch.get_current_status:
             encoding += 1
-        elif batch.get_current_status == 'Editing':
+        elif 'Editing' in batch.get_current_status:
             editing += 1
-        elif batch.get_current_status == 'Lab Verification':
+        elif 'Lab Verification' in batch.get_current_status:
             lab_verify += 1
-        elif batch.get_current_status == 'Final Verification':
+        elif 'Final Verification' in batch.get_current_status:
             final_verify += 1  
-        elif batch.get_current_status == 'Releasing':
+        elif 'Releasing' in batch.get_current_status:
             releasing += 1
     
 
@@ -245,6 +249,13 @@ def save_holiday(request):
 # <! -- end holiday --!>
 
 @login_required(login_url='/tat_sys/login')
+def qr_code(request,batch_uuid):
+    p = Batches.objects.get(uuid=batch_uuid)
+    current_holder = p.get_current_holder
+    return render(request, 'tat_sys/qr-code.html',{'current_holder' : current_holder,'batch' : p})
+
+
+@login_required(login_url='/tat_sys/login')
 def batches(request,batch_id):
     batch = Batches.objects.get(id=batch_id)
     # var_1_receiving = Process.objects.filter(batch__id=batch.id)
@@ -259,6 +270,7 @@ def batches(request,batch_id):
     var_5 = get_variable_many_value(batch.id,'5_concordance')
     var_5_1 = get_variable_many_value(batch.id,'5_1_')
     var_6 = get_variable_many_value(batch.id,'6_')
+
     
     # return HttpResponse(var_3)
    
@@ -296,13 +308,13 @@ def edit_process(request):
         
         if p.finish_date != None and p.finish_sign != None:
             if process == '1_receiving':
-                if check_for_creation('1_identification',p.id):
+                if not check_for_creation('1_identification',p.id):
                     batch.process_set.create(process="1_identification",start_date=finish_date)
             elif process == '1_identification':
-                if check_for_creation('2_encoding',p.id):
+                if not check_for_creation('2_encoding',p.id):
                     batch.process_set.create(process="2_encoding",start_date=finish_date)
             elif process == '2_encoding':
-                if check_for_creation('2_printing',p.id):
+                if not check_for_creation('2_printing',p.id):
                     batch.process_set.create(process="2_printing",start_date=finish_date)
             elif process == '2_printing':
                 if check_for_creation_multiple('3_lab_staff',batch_id):
@@ -398,10 +410,12 @@ def process_datetime(date_process):
 def check_for_creation(process,process_id):
     p = Process.objects.filter(id=process_id).filter(process=process).exists()
     
-    if p:
-        return False
-    else:
-        return True
+    return p
+    
+    # if p:
+    #     return True
+    # else:
+    #     return False
     
     
 def check_for_creation_multiple(process,process_id):
