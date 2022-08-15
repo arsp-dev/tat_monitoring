@@ -49,7 +49,7 @@ Welcome to ARSP-DMU | Calendar
                             <tbody>
                                 {% for holiday in holidays  %}
                                 <tr>
-                                    <td>{{ holiday.get_new_format }}</td>
+                                    <td>{{ holiday.get_new_format }} &#8592 Click to remove this holiday</td>
                                     <td>{{ holiday.id }}</td>
                                     <form action="{% url 'save_holiday' %}" method="post" class="hidden" id="holiday_form_{{ holiday.id }}">
                                         {% csrf_token %}

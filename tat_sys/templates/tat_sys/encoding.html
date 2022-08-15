@@ -26,13 +26,13 @@ Welcome to ARSP-DMU | Monitoring
 
 
 {% block content %}
-<!-- <div class="d-flex flex-row col-md-8 mx-auto m-b-15">
+<div class="d-flex flex-row col-md-8 mx-auto m-b-15">
     <a href="javascript:void(0)" data-toggle="modal"
     data-target="#add-new-event"
     class="btn m-t-20 btn-success btn-block waves-effect waves-light">
     <i class="ti-plus"></i> Add New Isolate Batch
 </a>
-</div> -->
+</div>
 <div class="row">
     <div class="col-md-8 mx-auto">
         <!-- card -->
@@ -43,12 +43,11 @@ Welcome to ARSP-DMU | Monitoring
                     <table id="zero_config" class="table table-striped table-bordered">
                         <thead>
                             <tr>
-                                <th style="text-align:center">Date Received</th>
+                                <!-- <th style="text-align:center">Date Received</th> -->
                                 <th style="text-align:center">Site Code</th>
                                 <th style="text-align:center">Batch Name</th>
                                 <th style="text-align:center">Date Received</th>
-                                <th style="text-align:center">Running TAT</th>
-                                <th style="text-align:center">Status</th>
+                                <th style="text-align:center">Isolate encoded</th>
                                 <th style="text-align:center">Actions</th>
                                 
                         </thead>
@@ -61,38 +60,28 @@ Welcome to ARSP-DMU | Monitoring
                                     {% elif batch.get_running_tat < 50 and batch.get_running_tat >= 40 %}
                                     table-warning
                                     {% endif %}">
-                                    <td style="text-align:center">{{ batch.get_format_date }}</td>
+                                    <!-- <td style="text-align:center">{{ batch.get_format_date }}</td> -->
                                     <td style="text-align:center">{{ batch.site }}</td>
                                     <td style="text-align:center">{{ batch.batch_name }}</td>
                                     <td style="text-align:center">{{ batch.date_received }}</td>
                                     <td style="text-align:center">
-                                        {% if batch.status == 'Completed' %}
-                                            Completed on time
-                                        {% elif batch.status == 'Overdue' %}
-                                            Completed but Overdue
-                                        {% else %}
-                                            {{ batch.get_running_tat }}
-                                        {% endif %}
-                                      
-    
+                                    {% if batch.number_of_isolate_encoded > 0 %}
+                                    <a href="/tat_sys/referred_list_view/{{ batch.uuid }}">{{ batch.number_of_isolate_encoded }} / {{ batch.number_of_isolates }}</a>
+                                    {% else %}
+                                    {{ batch.number_of_isolate_encoded }} / {{ batch.number_of_isolates }}
+                                    {% endif %}
+                                    
                                     </td>
-                                    <td style="text-align:center">
-                                        {% if batch.status == 'Completed' %}
-                                        Completed on time
-                                         {% elif batch.status == 'Overdue' %}
-                                        Completed but Overdue
-                                         {% else %}
-                                         {{ batch.get_current_status }}
-                                        {% endif %}
-                                       </td>
                                        <td style="text-align:center">
-                                       
-                                        <a href="{{ batch.get_absolute_url }}" data-toggle="tooltip" data-placement="top" title="" data-original-title="Show Data">
-                                            <i class="mdi mdi-eye"></i>
-                                        </a>
-                                        <!-- <a href="#" onclick="deleteBatch('{{ batch.batch_name }}','{{ batch.id }}')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
+                                       {% if batch.number_of_isolate_encoded != batch.number_of_isolates %}
+                                       <a href="#" onclick="createIsolate('{{ batch.batch_name }}','{{ batch.id }}','{{ batch.get_reference_number }}','{{ batch.get_lab_number }}')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Encode isolate to this batch">
+                                        <i class="mdi mdi-lead-pencil"></i>
+                                         </a>
+                                       {% endif %}
+                                      
+                                        <a href="#" onclick="deleteBatch('{{ batch.batch_name }}','{{ batch.id }}')" data-toggle="tooltip" data-placement="top" title="" data-original-title="Delete">
                                             <i class="mdi mdi-close"></i>
-                                        </a> -->
+                                        </a>
                                    
                                    
                                 </td>
@@ -103,12 +92,11 @@ Welcome to ARSP-DMU | Monitoring
                         </tbody>
                         <tfoot>
                             <tr>
-                                <th style="text-align:center">Date Received</th>
+                                <!-- <th style="text-align:center">Date Received</th> -->
                                 <th style="text-align:center">Site Code</th>
                                 <th style="text-align:center">Batch Name</th>
                                 <th style="text-align:center">Date Received</th>
-                                <th style="text-align:center">Running TAT</th>
-                                <th style="text-align:center">Status</th>
+                                <th style="text-align:center">Isolate encoded</th>
                                 <th style="text-align:center">Actions</th>
                             </tr>
                         </tfoot>
@@ -179,7 +167,7 @@ Welcome to ARSP-DMU | Monitoring
                         </div>
                     </div>
                     <hr>
-                    <div class="row m-t-3">
+                    <!-- <div class="row m-t-3">
                         <div class="col-md-6">
                             <label class="control-label">Number of Isolates: </label>
                             <input class="form-control form-white" placeholder="Enter number of isolates..." type="number"
@@ -190,7 +178,7 @@ Welcome to ARSP-DMU | Monitoring
                             <input class="form-control form-white" placeholder="Total number of isolates..." type="number"
                                 name="total_isolate_number" required/>
                         </div>
-                    </div>
+                    </div> -->
                     <hr>
                     <div class="row m-t-3">
                         <div class="col-md-6">
@@ -235,7 +223,7 @@ Welcome to ARSP-DMU | Monitoring
                     <div class="col-md-12 m-t-3">
                         <label class="control-label">Date Received: </label>
                         <div class="input-group">
-                            <input name="date_received" type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy" autocomplete="off">
+                            <input name="date_received" type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy" autocomplete="off" required>
                             <div class="input-group-append">
                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
@@ -267,7 +255,8 @@ Welcome to ARSP-DMU | Monitoring
                 <form method="POST" action="{% url 'delete_batch' %}">
                     {% csrf_token %}
                     <input type="hidden" name="batch_id" id="batch_id">
-                    <h3>Are you sure you want to delete <b id="batch_name"></b>?</h3>
+                    <h4>Are you sure you want to delete <b id="batch_name"></b>?</h4>
+                    <h4>All data that is binded with this batch will also be deleted.</h4>
                     
             </div>
             <div class="modal-footer">
@@ -281,19 +270,22 @@ Welcome to ARSP-DMU | Monitoring
 </div>
 
 
+
 <div class="modal fade none-border" id="createIsolate">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title"><strong>Delete this batch</strong></h4>
+                <h4 class="modal-title"><strong>Encode isolate to this batch</strong></h4>
                 <button type="button" class="close" data-dismiss="modal"
                     aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'delete_batch' %}">
+                <form method="POST" action="{% url 'create_referred' %}">
                     {% csrf_token %}
-                    <input type="hidden" name="batch_id" id="create_batch_id">
-                    <h3>Are you sure you want to create isolate <b id="create_batch_name"></b>?</h3>
+                    <input type="hidden" name="create_batch_id" id="create_batch_id">
+                    <input type="hidden" name="reference_number" id="reference_number">
+                    <input type="hidden" name="lab_number" id="lab_number">
+                    <h3>Are you sure you want to create isolate <b id="lab_number_txt"></b> with reference number: <b id="reference_number_txt"></b> ?</h3>
                     
             </div>
             <div class="modal-footer">
@@ -312,10 +304,17 @@ Welcome to ARSP-DMU | Monitoring
         $('#batch_name').text(batch_name);
         $('#batch_id').val(batch_id);
         $('#deleteBatch').modal();
-    } 
-
-
+    }
     
+    function createIsolate(batch_name,batch_id,reference_number,lab_number){
+        $('#reference_number').val(reference_number);
+        $('#reference_number_txt').text(reference_number);
+        $('#lab_number_txt').text(lab_number);
+        $('#lab_number').val(lab_number);
+        $('#create_batch_id').val(batch_id);
+        $('#createIsolate').modal();
+    }
+
 </script>
 {% endblock content %}
 

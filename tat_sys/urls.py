@@ -21,4 +21,9 @@ urlpatterns = [
    path('delete_batch', views.delete_batch, name="delete_batch"),
    path('delete_package', views.delete_package, name="delete_package"),
    path('qr-code/<str:batch_uuid>/', views.qr_code, name="qr_code"),
+   path('encoding', views.encoding_view, name="encoding"),
+   path('create_referred', views.create_referred, name="create_referred"),
+   path('referred_list_view/<str:uuid>/', views.referred_list_view, name="referred_list_view"),
+   path('referred_view/<str:uuid>/', views.referred_view, name="referred_view"),
+   path('save_referred/', views.save_referred, name="save_referred"),
 ] 

@@ -1,6 +1,6 @@
 Django==3.0.3
-psycopg2>=2.7,<3.0
+psycopg2>=2.8,<2.9
 pandas==0.25.3
 xlrd==1.2.0
 xlsxwriter==1.1.8
-django-qr-code==2.1.0
+django-mathfilters==1.0.0

@@ -1,3 +1,4 @@
+from weakref import ref
 from django.shortcuts import render
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.contrib.auth.decorators import login_required, permission_required
@@ -5,11 +6,12 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 import datetime
 from datetime import timedelta
-from tat_sys.models import Batches, Holiday, Process, Packages
+from tat_sys.models import Batches, Holiday, Process, Packages, Referred, SitePatienInformation, SiteIsolteInformation, SitePhenotypicResult, SiteOrganismResult, SiteDiskResult, SiteMicResult, ArsrlDiskResult, ArsrlMicResult, ArsrlOrganismInformation, ArsrlRecommendation
 from django.db import IntegrityError
 import os
 import pandas as pd
 import numpy as np
+from tat_sys.helper.save_referred import create_or_updated_referred
 # Create your views here.
 dirpath = os.getcwd()
 
@@ -24,6 +26,72 @@ sec_staff = sec_staff['Staff Name'].values.tolist()
 # @login_required(login_url='/tat_sys/login')
 # def qr_code(request):
 #     return render(request, 'tat_sys/qr-code.html')
+
+@login_required(login_url='/tat_sys/login')
+def save_referred(request):
+    referred = create_or_updated_referred(request)
+    uuid = request.POST['referred_uuid']
+    p = Referred.objects.filter(uuid=uuid).select_related('batch').first()
+    patient_info = SitePatienInformation.objects.filter(referred=p).first()
+    isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
+    phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
+    organism_result = SiteOrganismResult.objects.filter(referred=p).first()
+    site_disk = SiteDiskResult.objects.filter(referred=p).first()
+    site_mic = SiteMicResult.objects.filter(referred=p).first()
+    ars_org_info = ArsrlOrganismInformation.objects.filter(referred=p).first()
+    ars_recommendation = ArsrlRecommendation.objects.filter(referred=p).first()
+    ars_disk = ArsrlDiskResult.objects.filter(referred=p).first()
+    ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
+    return redirect('/tat_sys/referred_view/' + uuid,referred = p, patient_info = patient_info, isolate_info =isolate_info, phenotypic_result = phenotypic_result,
+                                                    organism_result = organism_result ,site_disk =site_disk, site_mic = site_mic, ars_org_info = ars_org_info, 
+                                                    ars_recommendation = ars_recommendation, ars_disk = ars_disk, ars_mic = ars_mic)
+  
+
+
+@login_required(login_url='/tat_sys/login')
+def referred_view(request,uuid):
+    p = Referred.objects.filter(uuid=uuid).select_related('batch').first()
+    patient_info = SitePatienInformation.objects.filter(referred=p).first()
+    isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
+    phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
+    organism_result = SiteOrganismResult.objects.filter(referred=p).first()
+    site_disk = SiteDiskResult.objects.filter(referred=p).first()
+    site_mic = SiteMicResult.objects.filter(referred=p).first()
+    ars_org_info = ArsrlOrganismInformation.objects.filter(referred=p).first()
+    ars_recommendation = ArsrlRecommendation.objects.filter(referred=p).first()
+    ars_disk = ArsrlDiskResult.objects.filter(referred=p).first()
+    ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
+    return render(request, 'tat_sys/referred.html',{'referred' : p, 'patient_info' : patient_info, 'isolate_info' : isolate_info, 'phenotypic_result' : phenotypic_result,
+                                                    'organism_result' : organism_result ,'site_disk' : site_disk, 'site_mic' : site_mic,
+                                                    'ars_org_info' : ars_org_info, 'ars_recommendation' : ars_recommendation, 'ars_disk' : ars_disk, 'ars_mic' : ars_mic})
+
+
+
+
+
+@login_required(login_url='/tat_sys/login')
+def referred_list_view(request,uuid):
+    p = Referred.objects.select_related('batch').filter(batch__uuid=uuid)
+    return render(request, 'tat_sys/referred_list.html',{'batches' : p})
+
+
+
+@login_required(login_url='/tat_sys/login')
+def create_referred(request):
+    batch_id = request.POST['create_batch_id']
+    reference_number = request.POST['reference_number']
+    lab_number = request.POST['lab_number']
+    batch = Batches.objects.filter(id=batch_id).first()
+    user = str(request.user.first_name) + ' ' + str(request.user.last_name)
+    batch.referred_set.create(reference_number=reference_number,lab_number=lab_number,created_by=user)
+    return HttpResponseRedirect('/tat_sys/encoding')
+
+
+
+@login_required(login_url='/tat_sys/login')
+def encoding_view(request):
+    batches = Batches.objects.all().order_by('-created_at')
+    return render(request, 'tat_sys/encoding.html',{'batches': batches,'lab_staff':lab_staff,'dmu_staff':dmu_staff,'sec_staff':sec_staff})
 
 
 @login_required(login_url='/tat_sys/login')
@@ -50,7 +118,7 @@ def delete_batch(request):
     batch_id = request.POST['batch_id']
     Batches.objects.filter(process__batch_id=batch_id).delete()
 
-    return HttpResponseRedirect('/tat_sys/monitoring')
+    return HttpResponseRedirect('/tat_sys/encoding')
 
 
 @login_required(login_url='/tat_sys/login')
@@ -130,8 +198,6 @@ def save_batches(request):
     if request.method == 'POST':
         site = request.POST['site']
         accession_number = request.POST['accession_number']
-        isolate_number = request.POST['isolate_number']
-        total_isolate_number = request.POST['total_isolate_number']
         batch_number = request.POST['batch_number']
         total_batch_number = request.POST['total_batch_number']
         date_received = request.POST['date_received']
@@ -144,22 +210,22 @@ def save_batches(request):
         
         received_by = request.POST['received_by']
         
-        batch_name = site + '_' + date_received + '_' + str(batch_number) + '_' + accession_number
+        accession_number = accession_number.replace(" ","")
+        
+        batch_name = site + '_' + date_received + '_' + str(batch_number) + '.' + str(total_batch_number) + '_' + accession_number
         
         try:
             batch = Batches.objects.create(batch_name=batch_name,
                                 site=site,
                                 accession_number=accession_number,
-                                isolate_number=isolate_number,
-                                total_isolate_number=total_isolate_number,
                                 batch_number=batch_number,
                                 total_batch_number=total_batch_number,
                                 date_received=datereceived,
                                 received_by=received_by)
             batch.process_set.create(process="1_receiving",start_date=batch.date_received)
-            return HttpResponseRedirect('/tat_sys/monitoring')
+            return HttpResponseRedirect('/tat_sys/encoding')
         except:
-            return HttpResponseRedirect('/tat_sys/monitoring')
+            return HttpResponseRedirect('/tat_sys/encoding')
 # <! -- end batches --!>
 
 @login_required(login_url='/tat_sys/login')
