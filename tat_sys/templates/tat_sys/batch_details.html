@@ -1,4 +1,5 @@
 {% extends 'tat_sys/base.html' %}
+{% load static %}
 {% load humanize %}
 {% load mathfilters %}
 {% load qr_code %}
@@ -43,32 +44,32 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                         <select class="form-control form-white" data-placeholder="Choose a site.."
                                             name="site" required>
                                             
-                                            <option {% ifequal batch.site 'BGH'  %} selected  {% endifequal %} value="BGH">BGH</option>
-                                            <option {% ifequal batch.site 'BRH'  %} selected  {% endifequal %} value="BRH">BRH</option>
-                                            <option {% ifequal batch.site 'BRT'  %} selected  {% endifequal %} value="BRT">BRT</option>
-                                            <option {% ifequal batch.site 'CMC'  %} selected  {% endifequal %} value="CMC">CMC</option>
-                                            <option {% ifequal batch.site 'CRH'  %} selected  {% endifequal %} value="CRH">CRH</option>
-                                            <option {% ifequal batch.site 'CVM'  %} selected  {% endifequal %} value="CVM">CVM</option>
-                                            <option {% ifequal batch.site 'DMC'  %} selected  {% endifequal %} value="DMC">DMC</option>
-                                            <option {% ifequal batch.site 'EVR'  %} selected  {% endifequal %} value="EVR">EVR</option>
-                                            <option {% ifequal batch.site 'FEU'  %} selected  {% endifequal %} value="FEU">FEU</option>
-                                            <option {% ifequal batch.site 'GMH'  %} selected  {% endifequal %} value="GMH">GMH</option>
-                                            <option {% ifequal batch.site 'JLM'  %} selected  {% endifequal %} value="JLM">JLM</option>
-                                            <option {% ifequal batch.site 'LCP'  %} selected  {% endifequal %} value="LCP">LCP</option>
-                                            <option {% ifequal batch.site 'MAR'  %} selected  {% endifequal %} value="MAR">MAR</option>
-                                            <option {% ifequal batch.site 'MMH'  %} selected  {% endifequal %} value="MMH">MMH</option>
-                                            <option {% ifequal batch.site 'NKI'  %} selected  {% endifequal %} value="NKI">NKI</option>
-                                            <option {% ifequal batch.site 'NMC'  %} selected  {% endifequal %} value="NMC">NMC</option>
-                                            <option {% ifequal batch.site 'ONP'  %} selected  {% endifequal %} value="ONP">ONP</option>
-                                            <option {% ifequal batch.site 'PGH'  %} selected  {% endifequal %} value="PGH">PGH</option>
-                                            <option {% ifequal batch.site 'RMC'  %} selected  {% endifequal %} value="RMC">RMC</option>
-                                            <option {% ifequal batch.site 'RTH'  %} selected  {% endifequal %} value="RTH">RTH</option>
-                                            <option {% ifequal batch.site 'RTM'  %} selected  {% endifequal %} value="RTM">RTM</option>
-                                            <option {% ifequal batch.site 'SLH'  %} selected  {% endifequal %} value="SLH">SLH</option>
-                                            <option {% ifequal batch.site 'STU'  %} selected  {% endifequal %} value="STU">STU</option>
-                                            <option {% ifequal batch.site 'VSM'  %} selected  {% endifequal %} value="VSM">VSM</option>
-                                            <option {% ifequal batch.site 'ZMC'  %} selected  {% endifequal %} value="ZMC">ZMC</option>
-                                            <option {% ifequal batch.site 'ZPH'  %} selected  {% endifequal %} value="ZPH">ZPH</option>
+                                            <option {% if 'BGH' in batch.site %} selected  {% endif %} value="BGH">BGH</option>
+                                            <option {% if 'BRH' in batch.site  %} selected  {% endif %} value="BRH">BRH</option>
+                                            <option {% if 'BRT' in batch.site  %} selected  {% endif %} value="BRT">BRT</option>
+                                            <option {% if 'CMC' in batch.site  %} selected  {% endif %} value="CMC">CMC</option>
+                                            <option {% if 'CRH' in batch.site  %} selected  {% endif %} value="CRH">CRH</option>
+                                            <option {% if 'CVM' in batch.site  %} selected  {% endif %} value="CVM">CVM</option>
+                                            <option {% if 'DMC' in batch.site  %} selected  {% endif %} value="DMC">DMC</option>
+                                            <option {% if 'EVR' in batch.site %} selected  {% endif %} value="EVR">EVR</option>
+                                            <option {% if 'FEU' in batch.site  %} selected  {% endif %} value="FEU">FEU</option>
+                                            <option {% if 'GMH' in batch.site  %} selected  {% endif %} value="GMH">GMH</option>
+                                            <option {% if 'JLM' in batch.site  %} selected  {% endif %} value="JLM">JLM</option>
+                                            <option {% if 'LCP' in batch.site  %} selected  {% endif %} value="LCP">LCP</option>
+                                            <option {% if 'MAR' in batch.site  %} selected  {% endif %} value="MAR">MAR</option>
+                                            <option {% if 'MMH' in batch.site  %} selected  {% endif %} value="MMH">MMH</option>
+                                            <option {% if 'NKI' in batch.site  %} selected  {% endif %} value="NKI">NKI</option>
+                                            <option {% if 'NMC' in batch.site  %} selected  {% endif %} value="NMC">NMC</option>
+                                            <option {% if 'ONP' in batch.site  %} selected  {% endif %} value="ONP">ONP</option>
+                                            <option {% if 'PGH' in batch.site  %} selected  {% endif %} value="PGH">PGH</option>
+                                            <option {% if 'RMC' in batch.site  %} selected  {% endif %} value="RMC">RMC</option>
+                                            <option {% if 'RTH' in batch.site  %} selected  {% endif %} value="RTH">RTH</option>
+                                            <option {% if 'RTM' in batch.site  %} selected  {% endif %} value="RTM">RTM</option>
+                                            <option {% if 'SLH' in batch.site  %} selected  {% endif %} value="SLH">SLH</option>
+                                            <option {% if 'STU' in batch.site  %} selected  {% endif %} value="STU">STU</option>
+                                            <option {% if 'VSM' in batch.site  %} selected  {% endif %} value="VSM">VSM</option>
+                                            <option {% if 'ZMC' in batch.site  %} selected  {% endif %} value="ZMC">ZMC</option>
+                                            <option {% if 'ZPH' in batch.site  %} selected  {% endif %} value="ZPH">ZPH</option>
                                            
                                         </select>
                     </div>
@@ -270,7 +271,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td>
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15"  {% ifequal var_1_identification.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15"  {% if var_1_identification.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_1_identification.process }}','{{ var_1_identification.id }}','{{ var_1_identification.get_format_date_start }}' ,'{{ var_1_identification.start_sign }}' , '{{ var_1_identification.finish_date_format }}', '{{ var_1_identification.finish_sign }}','{{ var_1_identification.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -332,7 +333,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_2_encoding.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_2_encoding.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_2_encoding.process }}','{{ var_2_encoding.id }}','{{ var_2_encoding.get_format_date_start }}' ,'{{ var_2_encoding.start_sign }}' , '{{ var_2_encoding.finish_date_format }}', '{{ var_2_encoding.finish_sign }}','{{ var_2_encoding.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -396,7 +397,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_2_printing.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_2_printing.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_2_printing.process }}','{{ var_2_printing.id }}','{{ var_2_printing.get_format_date_start }}' ,'{{ var_2_printing.start_sign }}' , '{{ var_2_printing.finish_date_format }}', '{{ var_2_printing.finish_sign }}','{{ var_2_printing.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -467,7 +468,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td  style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_3.0.process }}','{{ var_3.0.id }}','{{ var_3.0.get_format_date_start }}' ,'{{ var_3.0.start_sign }}' , '{{ var_3.0.finish_date_format }}', '{{ var_3.0.finish_sign }}','{{ var_3.0.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -529,7 +530,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td  style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_3.1.process }}','{{ var_3.1.id }}','{{ var_3.1.get_format_date_start }}' ,'{{ var_3.1.start_sign }}' , '{{ var_3.1.finish_date_format }}', '{{ var_3.1.finish_sign }}','{{ var_3.1.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -595,7 +596,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_3.2.process }}','{{ var_3.2.id }}','{{ var_3.2.get_format_date_start }}' ,'{{ var_3.2.start_sign }}' , '{{ var_3.2.finish_date_format }}', '{{ var_3.2.finish_sign }}','{{ var_3.2.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -658,7 +659,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_3.3.process }}','{{ var_3.3.id }}','{{ var_3.3.get_format_date_start }}' ,'{{ var_3.3.start_sign }}' , '{{ var_3.3.finish_date_format }}', '{{ var_3.3.finish_sign }}','{{ var_3.3.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -734,7 +735,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                         {% endif %}
                                     </td>
                                     <td style="text-align:center">
-                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                         onclick="UpdateTat('{{ value.process }}','{{ value.id }}','{{value.get_format_date_start }}' ,'{{ value.start_sign }}' , '{{ value.finish_date_format }}', '{{ value.finish_sign }}','{{ value.remarks }}','{{ batch.id }}')">Update</button>
                                     </td>
                                 </tr>
@@ -753,7 +754,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                             {% if var_3.3.finish_date != None %}
                             <tr>
                                 <th colspan="10">
-                                    <button class="btn btn-cyan btn-block waves-effect waves-light save-category float-right" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-cyan btn-block waves-effect waves-light save-category float-right" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="createProcess('3_','{{ batch.id }}')">Add another process to Process "3"</button>
 
                                 </th>
@@ -823,7 +824,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                             ---
                                     {% endif %}</td>
                                 <td  style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_4.0.process }}','{{ var_4.0.id }}','{{var_4.0.get_format_date_start }}' ,'{{ var_4.0.start_sign }}' , '{{ var_4.0.finish_date_format }}', '{{ var_4.0.finish_sign }}','{{ var_4.0.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -883,7 +884,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_4.1.process }}','{{ var_4.1.id }}','{{var_4.1.get_format_date_start }}' ,'{{ var_4.1.start_sign }}' , '{{ var_4.1.finish_date_format }}', '{{ var_4.1.finish_sign }}','{{ var_4.1.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -958,7 +959,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                         {% endif %}
                                     </td>
                                     <td style="text-align:center">
-                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                         onclick="UpdateTat('{{ value.process }}','{{ value.id }}','{{value.get_format_date_start }}' ,'{{ value.start_sign }}' , '{{ value.finish_date_format }}', '{{ value.finish_sign }}','{{ value.remarks }}','{{ batch.id }}')">Update</button>
                                     </td>
                                 </tr>
@@ -969,7 +970,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                             {% if var_4.1.finish_date != None %}
                             <tr>
                                 <th colspan="10">
-                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="createProcess('4_','{{ batch.id }}')">Add another process to Process "4"</button>
 
                                 </th>
@@ -1031,7 +1032,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_5.0.process }}','{{ var_5.0.id }}','{{var_5.0.get_format_date_start }}' ,'{{ var_5.0.start_sign }}' , '{{ var_5.0.finish_date_format }}', '{{ var_5.0.finish_sign }}','{{ var_5.0.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -1096,7 +1097,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ value.process }}','{{ value.id }}','{{value.get_format_date_start }}' ,'{{ value.start_sign }}' , '{{ value.finish_date_format }}', '{{ value.finish_sign }}','{{ value.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -1106,7 +1107,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                             {% if var_5.0.finish_date != None %}
                             <tr>
                                 <th colspan="10">
-                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="createProcess('5_concordance','{{ batch.id }}')">Add another process to Process "5"</button>
 
                                 </th>
@@ -1171,7 +1172,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_5_1.0.process }}','{{ var_5_1.0.id }}','{{var_5_1.0.get_format_date_start }}' ,'{{ var_5_1.0.start_sign }}' , '{{ var_5_1.0.finish_date_format }}', '{{ var_5_1.0.finish_sign }}','{{ var_5_1.0.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -1230,7 +1231,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                     {% endif %}
                                 </td>
                                 <td style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="UpdateTat('{{ var_5_1.1.process }}','{{ var_5_1.1.id }}','{{var_5_1.1.get_format_date_start }}' ,'{{ var_5_1.1.start_sign }}' , '{{ var_5_1.1.finish_date_format }}', '{{ var_5_1.1.finish_sign }}','{{ var_5_1.1.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -1298,7 +1299,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                 {% endif %}
                             </td>
                             <td style="text-align:center">
-                                <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                 onclick="UpdateTat('{{ value.process }}','{{ value.id }}','{{value.get_format_date_start }}' ,'{{ value.start_sign }}' , '{{ value.finish_date_format }}', '{{ value.finish_sign }}','{{ value.remarks }}','{{ batch.id }}')">Update</button>
                             </td>
                         </tr>
@@ -1311,7 +1312,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                             {% if var_5_1.1.finish_date != None %}
                             <tr>
                                 <th colspan="10">
-                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="createProcess('5_1_','{{ batch.id }}')">Add another process to Process "5.1"</button>
 
                                 </th>
@@ -1377,7 +1378,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                             ---
                                     {% endif %}</td>
                                     <td style="text-align:center">
-                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                        <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                         onclick="UpdateTat('{{ var_6.0.process }}','{{ var_6.0.id }}','{{var_6.0.get_format_date_start }}' ,'{{ var_6.0.start_sign }}' , '{{ var_6.0.finish_date_format }}', '{{ var_6.0.finish_sign }}','{{ var_6.0.remarks }}','{{ batch.id }}')">Update</button>
                                     </td>
                             </tr>
@@ -1435,7 +1436,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                             ---
                                     {% endif %}</td>
                                 <td  style="text-align:center">
-                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                         onclick="UpdateTat('{{ var_6.1.process }}','{{ var_6.1.id }}','{{var_6.1.get_format_date_start }}' ,'{{ var_6.1.start_sign }}' , '{{ var_6.1.finish_date_format }}', '{{ var_6.1.finish_sign }}','{{ var_6.1.remarks }}','{{ batch.id }}')">Update</button>
                                 </td>
                             </tr>
@@ -1504,7 +1505,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                 {% endif %}
                             </td>
                             <td style="text-align:center">
-                                <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                <button class="btn btn-success waves-effect waves-light save-category float-right m-t-15" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                 onclick="UpdateTat('{{ value.process }}','{{ value.id }}','{{value.get_format_date_start }}' ,'{{ value.start_sign }}' , '{{ value.finish_date_format }}', '{{ value.finish_sign }}','{{ value.remarks }}','{{ batch.id }}')">Update</button>
                             </td>
                         </tr>
@@ -1517,7 +1518,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                             {% if var_6.1.finish_date != None %}
                             <tr>
                                 <th colspan="10">
-                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% ifequal var_3.0.start_date None  %} disabled  {% endifequal %}
+                                    <button class="btn btn-block btn-cyan waves-effect waves-light save-category" {% if var_3.0.start_date == None  %} disabled  {% endif %}
                                     onclick="createProcess('6_','{{ batch.id }}')">Add another process to Process "6"</button>
 
                                 </th>
@@ -1538,7 +1539,7 @@ Welcome to ARSP-DMU | {{ batch.batch_name }}
                                 <td style="text-align:center"></td>
                                 <td style="text-align:center"></td>
                                 <td style="text-align:center">
-                                    <button  {% ifequal var_6.1.finish_date None  %} disabled  {% endifequal %} class="btn btn-success waves-effect waves-light save-category float-right m-t-15"
+                                    <button  {% if var_6.1.finish_date == None  %} disabled  {% endif %} class="btn btn-success waves-effect waves-light save-category float-right m-t-15"
                                     onclick="updateProcess('{{ batch.id }}')">Finish</button>
                                 </td>
                             </tr>

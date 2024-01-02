@@ -23,12 +23,17 @@ lab_staff = lab_staff['Staff Name'].values.tolist()
 dmu_staff = dmu_staff['Staff Name'].values.tolist()
 sec_staff = sec_staff['Staff Name'].values.tolist()
 
+all_org = pd.read_excel(dirpath + '/tat_sys/static/excel_files/org_all.xlsx')
+org_code = all_org['ORG'].values.tolist()
+org_name = all_org['ORG_CLEAN'].values.tolist()
+
 # @login_required(login_url='/tat_sys/login')
 # def qr_code(request):
 #     return render(request, 'tat_sys/qr-code.html')
 
 @login_required(login_url='/tat_sys/login')
 def save_referred(request):
+
     referred = create_or_updated_referred(request)
     uuid = request.POST['referred_uuid']
     p = Referred.objects.filter(uuid=uuid).select_related('batch').first()
@@ -44,7 +49,7 @@ def save_referred(request):
     ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
     return redirect('/tat_sys/referred_view/' + uuid,referred = p, patient_info = patient_info, isolate_info =isolate_info, phenotypic_result = phenotypic_result,
                                                     organism_result = organism_result ,site_disk =site_disk, site_mic = site_mic, ars_org_info = ars_org_info, 
-                                                    ars_recommendation = ars_recommendation, ars_disk = ars_disk, ars_mic = ars_mic)
+                                                    ars_recommendation = ars_recommendation, ars_disk = ars_disk, ars_mic = ars_mic,org_code = org_code)
   
 
 
@@ -63,7 +68,7 @@ def referred_view(request,uuid):
     ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
     return render(request, 'tat_sys/referred.html',{'referred' : p, 'patient_info' : patient_info, 'isolate_info' : isolate_info, 'phenotypic_result' : phenotypic_result,
                                                     'organism_result' : organism_result ,'site_disk' : site_disk, 'site_mic' : site_mic,
-                                                    'ars_org_info' : ars_org_info, 'ars_recommendation' : ars_recommendation, 'ars_disk' : ars_disk, 'ars_mic' : ars_mic})
+                                                    'ars_org_info' : ars_org_info, 'ars_recommendation' : ars_recommendation, 'ars_disk' : ars_disk, 'ars_mic' : ars_mic, 'all_org' : all_org})
 
 
 

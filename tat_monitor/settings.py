@@ -127,3 +127,5 @@ USE_TZ = True
 
 STATIC_ROOT = 'tat_sys'
 STATIC_URL = '/static/'
+
+DEFAULT_AUTO_FIELD='django.db.models.AutoField'
