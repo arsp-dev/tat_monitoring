@@ -40,17 +40,22 @@ INSTALLED_APPS = [
     'django.contrib.humanize',
     'tat_sys',
     'mathfilters',
-    'qr_code'
+    'qr_code',
+    'simple_history',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'simple_history.middleware.HistoryRequestMiddleware',
+
 ]
 
 ROOT_URLCONF = 'tat_monitor.urls'
@@ -72,7 +77,12 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'tat_monitor.wsgi.application'
+CORS_ALLOW_ALL_ORIGINS = True
 
+CORS_ALLOWED_ORIGINS = [
+    'http://localhost:8080',
+    # Add other allowed origins here
+]
 
 # Database
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
@@ -113,7 +123,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Manila'
 
 USE_I18N = True
 
@@ -127,5 +137,10 @@ USE_TZ = True
 
 STATIC_ROOT = 'tat_sys'
 STATIC_URL = '/static/'
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'tat_sys/static'),
+]
 
 DEFAULT_AUTO_FIELD='django.db.models.AutoField'
+
+

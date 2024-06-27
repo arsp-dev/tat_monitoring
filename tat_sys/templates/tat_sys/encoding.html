@@ -26,18 +26,29 @@ Welcome to ARSP-DMU | Monitoring
 
 
 {% block content %}
+{% if user.userprofile.is_super_encoder or user.userprofile.is_site_encoder  %}
 <div class="d-flex flex-row col-md-8 mx-auto m-b-15">
     <a href="javascript:void(0)" data-toggle="modal"
     data-target="#add-new-event"
     class="btn m-t-20 btn-success btn-block waves-effect waves-light">
-    <i class="ti-plus"></i> Add New Isolate Batch
+    <i class="ti-plus"></i> Add New Isolate
 </a>
 </div>
+{% endif %}
 <div class="row">
     <div class="col-md-8 mx-auto">
         <!-- card -->
         <div class="card">
             <div class="card-body">
+                {% if errors %}
+                <ul>
+                    {% for field, field_errors in errors.items %}
+                        {% for error in field_errors %}
+                            <li>{{ field }}: {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
                 <h4 class="card-title m-b-0 m-t-3">Isolates List</h4>
                 <div class="table-responsive">
                     <table id="zero_config" class="table table-striped table-bordered">
@@ -45,14 +56,31 @@ Welcome to ARSP-DMU | Monitoring
                             <tr>
                                 <!-- <th style="text-align:center">Date Received</th> -->
                                 <th style="text-align:center">Site Code</th>
-                                <th style="text-align:center">Batch Name</th>
-                                <th style="text-align:center">Date Received</th>
-                                <th style="text-align:center">Isolate encoded</th>
+                                <th style="text-align:center">Accesion number</th>
+                                <th style="text-align:center">Date Created</th>
+                                <th style="text-align:center">Encoded By</th>
                                 <th style="text-align:center">Actions</th>
                                 
                         </thead>
                         <tbody>
-                            {% for batch in batches  %}
+                            {% for referred in referreds%}
+                            <tr>
+                            <td style="text-align:center">{{ referred.hospital_code }}</td>
+                            <td style="text-align:center">
+                                <a href="/tat_sys/referred_view/{{ referred.uuid }}">{{ referred.accession_number }} </a>
+                            </td>
+                            <td style="text-align:center">{{ referred.created_at }}</td>
+                            <td style="text-align:center">{{ referred.created_by }}</td>
+                            <td style="text-align:center">
+                                <a href="/tat_sys/generate_report/{{ referred.uuid }}" data-toggle="tooltip" data-placement="top" target="_blank" data-original-title="Generate Report">
+                                    <i class="mdi mdi-download"></i>
+                                </a>
+
+
+                            </td>
+                        </tr>
+                            {% endfor %}
+                            {% comment %} {% for batch in batches  %}
                            
                                 <tr class="
                                     {% if batch.get_running_tat >= 50  %}
@@ -88,15 +116,15 @@ Welcome to ARSP-DMU | Monitoring
                                 </tr>
                           
                             
-                            {% endfor  %}  
+                            {% endfor  %}   {% endcomment %}
                         </tbody>
                         <tfoot>
                             <tr>
                                 <!-- <th style="text-align:center">Date Received</th> -->
                                 <th style="text-align:center">Site Code</th>
-                                <th style="text-align:center">Batch Name</th>
-                                <th style="text-align:center">Date Received</th>
-                                <th style="text-align:center">Isolate encoded</th>
+                                <th style="text-align:center">Accesion number</th>
+                                <th style="text-align:center">Date Created</th>
+                                <th style="text-align:center">Encoded By</th>
                                 <th style="text-align:center">Actions</th>
                             </tr>
                         </tfoot>
@@ -123,41 +151,19 @@ Welcome to ARSP-DMU | Monitoring
                     aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'save_batches' %}">
+                <form method="POST" action="{% url 'create_referred' %}">
                     {% csrf_token %}
                     <!-- <input type="hidden" value="{{ user.get_full_name  }}" name="received_by"> -->
+                    {% if user.userprofile.is_super_encoder or user.userprofile.is_lab_encoder  %}
                     <div class="row">
                         <div class="col-md-6">
-                            <label class="control-label">Site Name</label>
+                            <label class="control-label">Hospital Code</label>
                             <select class="form-control form-white" data-placeholder="Choose a site.."
-                                name="site" required>
+                                name="hospital_code" required>
                                 <option value=""> </option>
-                                <option value="BGH">BGH</option>
-                                <option value="BRH">BRH</option>
-                                <option value="BRT">BRT</option>
-                                <option value="CMC">CMC</option>
-                                <option value="CRH">CRH</option>
-                                <option value="CVM">CVM</option>
-                                <option value="DMC">DMC</option>
-                                <option value="EVR">EVR</option>
-                                <option value="FEU">FEU</option>
-                                <option value="GMH">GMH</option>
-                                <option value="JLM">JLM</option>
-                                <option value="LCP">LCP</option>
-                                <option value="MAR">MAR</option>
-                                <option value="MMH">MMH</option>
-                                <option value="NKI">NKI</option>
-                                <option value="NMC">NMC</option>
-                                <option value="ONP">ONP</option>
-                                <option value="PGH">PGH</option>
-                                <option value="RMC">RMC</option>
-                                <option value="RTH">RTH</option>
-                                <option value="RTM">RTM</option>
-                                <option value="SLH">SLH</option>
-                                <option value="STU">STU</option>
-                                <option value="VSM">VSM</option>
-                                <option value="ZMC">ZMC</option>
-                                <option value="ZPH">ZPH</option>
+                                {%for hl in hospitals%}
+                                <option value="{{ hl.id }}">{{hl.hospital_code}}</option>
+                                {% endfor %}
                             </select>
                         </div>
                         <div class="col-md-6">
@@ -166,71 +172,22 @@ Welcome to ARSP-DMU | Monitoring
                                 name="accession_number"  required/>
                         </div>
                     </div>
+                    {% endif %}
+                    {% if user.userprofile.is_site_encoder %}
+                    <div class="row">
+                        
+                            <input name="hospital_code" type="hidden" value="{{user.userprofile.hospital.ida}}"/>
+                      
+                        <div class="col-md-12">
+                            <label class="control-label">Accession Number: </label>
+                            <input class="form-control form-white" placeholder="Enter accession number..." type="text"
+                                name="accession_number"  required/>
+                        </div>
+                    </div>
+                    {% endif %}
                     <hr>
-                    <!-- <div class="row m-t-3">
-                        <div class="col-md-6">
-                            <label class="control-label">Number of Isolates: </label>
-                            <input class="form-control form-white" placeholder="Enter number of isolates..." type="number"
-                                name="isolate_number" required />
-                        </div>
-                        <div class="col-md-6">
-                            <label class="control-label">Total number of isolates: </label>
-                            <input class="form-control form-white" placeholder="Total number of isolates..." type="number"
-                                name="total_isolate_number" required/>
-                        </div>
-                    </div> -->
-                    <hr>
-                    <div class="row m-t-3">
-                        <div class="col-md-6">
-                            <label class="control-label">Batch Number: </label>
-                            <input class="form-control form-white" placeholder="Enter batch number..." type="number"
-                                name="batch_number" required/>
-                        </div>
-                        <div class="col-md-6">
-                            <label class="control-label">Total number of batch: </label>
-                            <input class="form-control form-white" placeholder="Total batch number..." type="number"
-                                name="total_batch_number" required/>
-                        </div>
-                    </div>
-                <hr>
-                <div class="row m-t-3">
-                    <div class="col-md-12">
-                        <label class="control-label">Received by</label>
-                        <select class="form-control form-white" name="received_by" id="start_sign">
-                            <option selected value=""> </option>
-                            <option value="Sonia B. Sia, M.D.">Sonia B. Sia, M.D.</option>
-                            <option value="Marietta L. Lagrada">Marietta L. Lagrada</option>
-                            <option value="June M. Gayeta">June M. Gayeta</option>
-                            <optgroup label="Laboratory">
-                                {% for lab in lab_staff %}
-                                <option value="{{ lab }}">{{ lab }}</option>
-                                {% endfor %}
-                               
-                            </optgroup>
-                            <optgroup label="DMU">
-                                {% for dmu in dmu_staff %}
-                                <option value="{{ dmu }}">{{ dmu }}</option>
-                                {% endfor %}
-                            </optgroup>
-                            <optgroup label="Secretariat">
-                                {% for sec in sec_staff %}
-                                <option value="{{ sec }}">{{ sec }}</option>
-                                {% endfor %}
-                            </optgroup>
-                        </select>
-                    </div>
-                    
-                    <div class="col-md-12 m-t-3">
-                        <label class="control-label">Date Received: </label>
-                        <div class="input-group">
-                            <input name="date_received" type="text" class="form-control mydatepicker" placeholder="mm/dd/yyyy" autocomplete="off" required>
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                        </div>
-                    </div>
-                  
-                </div>
+        
+     
             </div>
             <div class="modal-footer">
                 <button type="submit" class="btn btn-danger waves-effect waves-light save-category">Save</button>
@@ -280,7 +237,7 @@ Welcome to ARSP-DMU | Monitoring
                     aria-hidden="true">&times;</button>
             </div>
             <div class="modal-body">
-                <form method="POST" action="{% url 'create_referred' %}">
+                <form method="POST">
                     {% csrf_token %}
                     <input type="hidden" name="create_batch_id" id="create_batch_id">
                     <input type="hidden" name="reference_number" id="reference_number">

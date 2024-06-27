@@ -26,4 +26,7 @@ urlpatterns = [
    path('referred_list_view/<str:uuid>/', views.referred_list_view, name="referred_list_view"),
    path('referred_view/<str:uuid>/', views.referred_view, name="referred_view"),
    path('save_referred/', views.save_referred, name="save_referred"),
+   path('save_referred_lab/', views.save_referred_lab, name="save_referred_lab"),
+   path('update_org_code/', views.update_org_code, name="update_org_code"),
+   path('generate_report/<str:uuid>/', views.generate_report, name="generate_report"),
 ] 

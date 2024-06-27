@@ -6,12 +6,19 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 import datetime
 from datetime import timedelta
-from tat_sys.models import Batches, Holiday, Process, Packages, Referred, SitePatienInformation, SiteIsolteInformation, SitePhenotypicResult, SiteOrganismResult, SiteDiskResult, SiteMicResult, ArsrlDiskResult, ArsrlMicResult, ArsrlOrganismInformation, ArsrlRecommendation
+from tat_sys.models import Holiday, Referred, SitePatienInformation, SiteIsolteInformation, SitePhenotypicResult, SiteOrganismResult, SiteDiskResult, SiteMicResult, ArsrlDiskResult, ArsrlMicResult, ArsrlOrganismInformation, ArsrlRecommendation, Hospital
 from django.db import IntegrityError
 import os
 import pandas as pd
 import numpy as np
-from tat_sys.helper.save_referred import create_or_updated_referred
+from tat_sys.helper.save_referred import create_or_updated_referred, create_or_updated_referred_lab
+from django.core.exceptions import ValidationError
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from weasyprint import HTML
+from django.template.loader import get_template
+from datetime import datetime
+from tat_sys.helper.abx_panels import select_panel
+
 # Create your views here.
 dirpath = os.getcwd()
 
@@ -31,12 +38,100 @@ org_name = all_org['ORG_CLEAN'].values.tolist()
 # def qr_code(request):
 #     return render(request, 'tat_sys/qr-code.html')
 
+
+@login_required(login_url='/tat_sys/login')
+def generate_report(request,uuid):
+    p = Referred.objects.filter(uuid=uuid).first()
+    patient_info = SitePatienInformation.objects.filter(referred=p).first()
+    isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
+    phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
+    organism_result = SiteOrganismResult.objects.filter(referred=p).first()
+    site_abx_disk_panel, site_abx_mic_panel = select_panel(organism_result.org_code)
+    site_disk = SiteDiskResult.objects.filter(referred=p).first()
+    site_mic = SiteMicResult.objects.filter(referred=p).first()
+    ars_org_info = ArsrlOrganismInformation.objects.filter(referred=p).first()
+    ars_abx_disk_panel, ars_abx_mic_panel = select_panel(ars_org_info.org_code)
+    ars_recommendation = ArsrlRecommendation.objects.filter(referred=p).first()
+    ars_disk = ArsrlDiskResult.objects.filter(referred=p).first()
+    ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
+    # Load your template
+    template = get_template('template.html')
+
+    # Context data to render the template
+    context = {
+        'title': p.accession_number + ' - ' + p.hospital_code.hospital_name + '[ ' + datetime.now().strftime('%m_%d_%Y') + ' ]',
+        'referred': p,
+        'patient_info' : patient_info,
+        'isolate_info' : isolate_info,
+        'site_organism_result' : organism_result,
+        'ars_org_code' : ars_org_info.org_code,
+        'site_disk' : [(field_name, getattr(site_disk, field_name)) for field_name in site_abx_disk_panel],
+        'site_mic' : [(field_name, getattr(site_mic, field_name)) for field_name in site_abx_mic_panel],
+        'ars_disk' : [(field_name, getattr(ars_disk, field_name)) for field_name in ars_abx_disk_panel],
+        'ars_mic' : [(field_name, getattr(ars_mic, field_name)) for field_name in ars_abx_mic_panel],
+        'ars_organism_result': ars_org_info
+    }
+
+    # Render the HTML template with context data
+    html = template.render(context)
+
+    # Generate the PDF
+    pdf = HTML(string=html, base_url=request.build_absolute_uri()).write_pdf()
+
+    # Create a response with PDF content
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = 'inline; filename="output.pdf"'
+
+    return response
+
+def update_org_code(request):
+        selected_org_code = request.GET.get('org_code', None)
+        
+        # Assuming the Excel file is named 'hospitals.xlsx' and is located in the same directory as your Django app
+        excel_file_path = dirpath + '/tat_sys/static/excel_files/abx_all.xlsx'
+        
+        try:
+            # Read the Excel file
+            excel_data = pd.read_excel(excel_file_path, sheet_name='eco')
+            
+            # Convert the DataFrame to a list of dictionaries
+            table_data = excel_data.to_dict(orient='records')
+            
+            # Return the table data as a JSON response
+            return JsonResponse(table_data, safe=False)
+        
+        
+        except Exception as e:
+            # Handle exceptions such as FileNotFoundError, SheetNotInDefinedNameError, etc.
+            return JsonResponse({'error': str(e)}, status=500)
+
 @login_required(login_url='/tat_sys/login')
 def save_referred(request):
 
     referred = create_or_updated_referred(request)
     uuid = request.POST['referred_uuid']
-    p = Referred.objects.filter(uuid=uuid).select_related('batch').first()
+    p = Referred.objects.filter(uuid=uuid).first()
+    patient_info = SitePatienInformation.objects.filter(referred=p).first()
+    isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
+    phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
+    organism_result = SiteOrganismResult.objects.filter(referred=p).first()
+    site_disk = SiteDiskResult.objects.filter(referred=p).first()
+    site_mic = SiteMicResult.objects.filter(referred=p).first()
+    ars_org_info = ArsrlOrganismInformation.objects.filter(referred=p).first()
+    ars_recommendation = ArsrlRecommendation.objects.filter(referred=p).first()
+    ars_disk = ArsrlDiskResult.objects.filter(referred=p).first()
+    ars_mic = ArsrlMicResult.objects.filter(referred=p).first()
+    return redirect('/tat_sys/referred_view/' + uuid,referred = p, patient_info = patient_info, isolate_info =isolate_info, phenotypic_result = phenotypic_result,
+                                                    organism_result = organism_result ,site_disk =site_disk, site_mic = site_mic, ars_org_info = ars_org_info, 
+                                                    ars_recommendation = ars_recommendation, ars_disk = ars_disk, ars_mic = ars_mic,org_code = org_code)
+
+
+
+@login_required(login_url='/tat_sys/login')
+def save_referred_lab(request):
+    referred = create_or_updated_referred_lab(request)
+    uuid = request.POST['referred_uuid']
+    p = Referred.objects.filter(uuid=uuid).first()
     patient_info = SitePatienInformation.objects.filter(referred=p).first()
     isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
     phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
@@ -55,7 +150,7 @@ def save_referred(request):
 
 @login_required(login_url='/tat_sys/login')
 def referred_view(request,uuid):
-    p = Referred.objects.filter(uuid=uuid).select_related('batch').first()
+    p = Referred.objects.filter(uuid=uuid).first()
     patient_info = SitePatienInformation.objects.filter(referred=p).first()
     isolate_info = SiteIsolteInformation.objects.filter(referred=p).first()
     phenotypic_result = SitePhenotypicResult.objects.filter(referred=p).first()
@@ -76,27 +171,50 @@ def referred_view(request,uuid):
 
 @login_required(login_url='/tat_sys/login')
 def referred_list_view(request,uuid):
-    p = Referred.objects.select_related('batch').filter(batch__uuid=uuid)
+    p = Referred.objects.all()
     return render(request, 'tat_sys/referred_list.html',{'batches' : p})
 
 
 
 @login_required(login_url='/tat_sys/login')
 def create_referred(request):
-    batch_id = request.POST['create_batch_id']
-    reference_number = request.POST['reference_number']
-    lab_number = request.POST['lab_number']
-    batch = Batches.objects.filter(id=batch_id).first()
-    user = str(request.user.first_name) + ' ' + str(request.user.last_name)
-    batch.referred_set.create(reference_number=reference_number,lab_number=lab_number,created_by=user)
+    # batch_id = request.POST['create_batch_id']
+    # reference_number = request.POST['reference_number']
+    # lab_number = request.POST['lab_number']
+    # batch = Batches.objects.filter(id=batch_id).first()
+    # user = str(request.user.first_name) + ' ' + str(request.user.last_name)
+    # batch.referred_set.create(reference_number=reference_number,lab_number=lab_number,created_by=user)
+    hospital_code = request.POST['hospital_code']
+    accession_number = request.POST['accession_number']
+    user = str(request.user.username)
+    # Perform validation
+    try:
+        referred = Referred(accession_number=accession_number, hospital_code_id=hospital_code,created_by=user)
+        referred.full_clean()  # This will trigger model validation
+    except ValidationError as e:
+        errors = e.message_dict
+        return render(request, 'encoding.html', {'errors': errors})
+    else:
+        # Save the referred object if validation passes
+        referred.save()
+        # Redirect or render success page
+        # return redirect('success_url')
+        # or
+        # return render(request, 'success.html')
     return HttpResponseRedirect('/tat_sys/encoding')
 
 
 
 @login_required(login_url='/tat_sys/login')
 def encoding_view(request):
-    batches = Batches.objects.all().order_by('-created_at')
-    return render(request, 'tat_sys/encoding.html',{'batches': batches,'lab_staff':lab_staff,'dmu_staff':dmu_staff,'sec_staff':sec_staff})
+    # batches = Batches.objects.all().order_by('-created_at')
+    hospitals = Hospital.objects.all()
+    referreds = Referred.objects.all().order_by('-created_at')
+    if request.user.groups.filter(name='SiteEncoder').exists():
+        referreds = Referred.objects.filter(hospital_code=request.user.userprofile.hospital).order_by('-created_at')
+
+    return render(request, 'tat_sys/encoding.html',{'lab_staff':lab_staff,'dmu_staff':dmu_staff,'sec_staff':sec_staff,'hospitals':hospitals, 'referreds':referreds})
+    # return render(request, 'tat_sys/encoding.html',{'batches': batches,'lab_staff':lab_staff,'dmu_staff':dmu_staff,'sec_staff':sec_staff})
 
 
 @login_required(login_url='/tat_sys/login')
@@ -137,12 +255,19 @@ def delete_package(request):
 # GET : view for landing page
 @login_required(login_url='/tat_sys/login')
 def tat_landing(request):
-    on_going_tat = Batches.objects.filter(status=None).count()
+#     on_going_tat = Batches.objects.filter(status=None).count()
+# # on_going_tat = Batches.dashboard.count()
+#     warning_tat = Batches.objects.filter(date_received__lt=datetime.datetime.now() - timedelta(days=40)).filter(date_received__gt=datetime.datetime.now() - timedelta(days=50)).count()
+#     overdue_tat = Batches.objects.filter(status='Overdue').count()
+#     ontime_tat = Batches.objects.filter(status='Completed').count()
+#     batches = Batches.objects.filter(status=None)
+    
+    on_going_tat = 0
 # on_going_tat = Batches.dashboard.count()
-    warning_tat = Batches.objects.filter(date_received__lt=datetime.datetime.now() - timedelta(days=40)).filter(date_received__gt=datetime.datetime.now() - timedelta(days=50)).count()
-    overdue_tat = Batches.objects.filter(status='Overdue').count()
-    ontime_tat = Batches.objects.filter(status='Completed').count()
-    batches = Batches.objects.filter(status=None)
+    warning_tat = 0
+    overdue_tat = 0
+    ontime_tat = 0
+    batches = 0
     
     
     processing = 0
@@ -153,19 +278,19 @@ def tat_landing(request):
     releasing = 0
     
     
-    for batch in batches:
-        if 'Processing' in batch.get_current_status:
-            processing += 1
-        elif 'Encoding' in batch.get_current_status:
-            encoding += 1
-        elif 'Editing' in batch.get_current_status:
-            editing += 1
-        elif 'Lab Verification' in batch.get_current_status:
-            lab_verify += 1
-        elif 'Final Verification' in batch.get_current_status:
-            final_verify += 1  
-        elif 'Releasing' in batch.get_current_status:
-            releasing += 1
+    # for batch in batches:
+    #     if 'Processing' in batch.get_current_status:
+    #         processing += 1
+    #     elif 'Encoding' in batch.get_current_status:
+    #         encoding += 1
+    #     elif 'Editing' in batch.get_current_status:
+    #         editing += 1
+    #     elif 'Lab Verification' in batch.get_current_status:
+    #         lab_verify += 1
+    #     elif 'Final Verification' in batch.get_current_status:
+    #         final_verify += 1  
+    #     elif 'Releasing' in batch.get_current_status:
+    #         releasing += 1
     
 
     return render(request, 'tat_sys/tat_landing.html',{'batches': batches, 'on_going_tat': on_going_tat,

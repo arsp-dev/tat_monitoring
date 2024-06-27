@@ -191,9 +191,16 @@
                 <nav class="sidebar-nav">
                     <ul id="sidebarnav" class="p-t-30">
                         <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link active" href="{% url 'tat_landing' %}" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Dashboard</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'receiving' %}" aria-expanded="false"><i class="mdi mdi-check-circle-outline"></i><span class="hide-menu">Receiving</span></a></li>
-                     
-                        <li class="sidebar-item">
+                        {% comment %} <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'receiving' %}" aria-expanded="false"><i class="mdi mdi-check-circle-outline"></i><span class="hide-menu">Receiving</span></a></li> {% endcomment %}
+                        {% comment %} <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'encoding' %}" aria-expanded="false"><i class="mdi mdi-lead-pencil"></i>Create Isolate {{ user.userprofile.is_super_encoder }}</a></li> {% endcomment %}
+                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'encoding' %}" aria-expanded="false"><i class="mdi mdi-lead-pencil"></i>Create Isolate {% if user.userprofile.is_super_encoder  %} for Sentinel Site{% endif %}</a></li>
+                              {% comment %} <li class="sidebar-item">
+                                <a href="form-wizard.html" class="sidebar-link"
+                                  ><i class="mdi mdi-note-plus"></i
+                                  ><span class="hide-menu"> Encoded Referred Isolates </span></a
+                                >
+                              </li> {% endcomment %}
+                        {% comment %} <li class="sidebar-item">
                             <a
                               class="sidebar-link has-arrow waves-effect waves-dark"
                               href="javascript:void(0)"
@@ -210,11 +217,11 @@
                                 >
                               </li>
                             </ul>
-                          </li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'monitoring' %}" aria-expanded="false"><i class="mdi mdi-chart-areaspline"></i><span class="hide-menu">Monitoring</span></a></li>
+                          </li> {% endcomment %}
+                        {% comment %} <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'monitoring' %}" aria-expanded="false"><i class="mdi mdi-chart-areaspline"></i><span class="hide-menu">Monitoring</span></a></li> {% endcomment %}
                         <!-- <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-view-dashboard"></i><span class="hide-menu">Monitoring</span></a></li> -->
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-file-chart"></i><span class="hide-menu">Report</span></a></li>
-                        <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'calendar' %}" aria-expanded="false"><i class="mdi mdi-calendar-clock"></i><span class="hide-menu">Calendar</span></a></li>
+                        {% comment %} <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="#" aria-expanded="false"><i class="mdi mdi-file-chart"></i><span class="hide-menu">Report</span></a></li> {% endcomment %}
+                        {% comment %} <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link" href="{% url 'calendar' %}" aria-expanded="false"><i class="mdi mdi-calendar-clock"></i><span class="hide-menu">Calendar</span></a></li> {% endcomment %}
                         <!-- <li class="sidebar-item"> <a class="sidebar-link waves-effect waves-dark sidebar-link"  aria-expanded="false"><i class="mdi mdi-calendar-clock"></i><span class="hide-menu">QR Codes</span></a></li> -->
                         <!-- <li class="sidebar-item"> <a class="sidebar-link has-arrow waves-effect waves-dark" href="javascript:void(0)" aria-expanded="false"><i class="mdi mdi-earth"></i><span class="hide-menu">Whonet </span></a> -->
                             <ul aria-expanded="false" class="collapse  first-level">
@@ -430,6 +437,7 @@
     });
     $('.mydatepicker').datepicker();
 </script> 
+  
 </body>
 
 </html>
